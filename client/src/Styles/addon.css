@@ -1,0 +1,18 @@
+.home-main {
+    height: 100vh;
+    position: relative;
+  }
+  
+  .home-content {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .new-chat {
+    width: fit-content;
+  }
+  .chat-container {
+    height: 80vh;
+  }
