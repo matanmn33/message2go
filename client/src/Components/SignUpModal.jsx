@@ -59,7 +59,6 @@ function SignUpModal() {
       registredStatus == "Passwords do not match" ||
       registredStatus == "All fields are required" 
     ) {
-      console.log(registredStatus);
       
       return (
         <p className="alert alert-danger">
