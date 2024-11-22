@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
-import {useCookies} from "react-cookie";
-import {useNavigate} from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 function LoginModal() {
   const [show, setShow] = useState(false);
@@ -14,33 +14,53 @@ function LoginModal() {
 
   const [errorMsg, seterrorMsg] = useState(null);
   const [userData, setuserData] = useState({});
-  const [cookies, setCookie] = useCookies(['token']);
+  const [cookies, setCookie] = useCookies(["token"]);
+
+  const [LoginFlag, setLoginFlag] = useState(false);
+  const [ThrowMsg, setThrowMsg] = useState("");
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (LoginFlag == true) {
+      checkToken();
+      throwErrorMsg();
+    }
+  });
+
   const loginButton = async () => {
+    setLoginFlag(true);
     try {
       await axios
         .post("http://127.0.0.1:3000/api/users/login", userParams)
         .then((response) => setuserData(response.data));
-        seterrorMsg(userData);      
+      seterrorMsg(userData);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const checkToken = () => {
+    if (cookies.token) {
+      return navigate("/chat");
+    }
+  };
+
+  const Msg = () => {
+    return <p className="alert alert-danger">{ThrowMsg}</p>;
+  };
+
   const throwErrorMsg = () => {
     if (errorMsg !== null) {
       if (userData.message !== "Logged in successfully") {
-        return (
-          <p className="alert alert-danger"> 
-            Username or password is incorrect. Please try again.
-          </p>
-        );
+        setThrowMsg("Username or password is incorrect. Please try again.");
       } else {
-        setCookie('token', userData.token, { path: "/", secure: false, sameSite: "strict", maxAge: 43200 });
-        return (
-          navigate("/chat")
-        );
+        setCookie("token", userData.token, {
+          path: "/",
+          secure: false,
+          sameSite: "strict",
+          maxAge: 43200,
+        });
       }
     }
     return null;
@@ -64,31 +84,36 @@ function LoginModal() {
           <Modal.Title>Login to Message2Go platform</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Control
-            className="mb-2"
-            type="text"
-            name="username"
-            placeholder="Username..."
-            onChange={(e) =>
-              setuserParams({ ...userParams, username: e.target.value })
-            }
-          />
-          <Form.Control
-            className="mb-2"
-            type="password"
-            name="password"
-            placeholder="Password..."
-            onChange={(e) =>
-              setuserParams({ ...userParams, password: e.target.value })
-            }
-          />
-          {throwErrorMsg()}
+          {ThrowMsg ? Msg() : null}
+
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault(), loginButton();
+            }}
+          >
+            <Form.Control
+              className="mb-2"
+              type="text"
+              name="username"
+              placeholder="Username..."
+              onChange={(e) =>
+                setuserParams({ ...userParams, username: e.target.value })
+              }
+            />
+            <Form.Control
+              className="mb-2"
+              type="password"
+              name="password"
+              placeholder="Password..."
+              onChange={(e) =>
+                setuserParams({ ...userParams, password: e.target.value })
+              }
+            />
+            <Button variant="primary" type="submit">
+              Login
+            </Button>
+          </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={loginButton}>
-            Login
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

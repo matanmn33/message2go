@@ -8,15 +8,15 @@ function Chat() {
 
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const response = await fetch("https://jsonplaceholder.com/users");
-      const data = await response.json();
-      setMessages(data);
-    };
+  // useEffect(() => {
+  //   const fetchMessages = async () => {
+  //     const response = await fetch("https://jsonplaceholder.com/users");
+  //     const data = await response.json();
+  //     setMessages(data);
+  //   };
 
-    fetchMessages();
-  }, []);
+  //   fetchMessages();
+  // }, []);
 
   const [currentUser, setCurrentUser] = useState({});
 

@@ -3,7 +3,6 @@ import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 
 function SignUpModal() {
-
   const [registerParams, setRegisterParams] = useState({
     username: undefined,
     email: undefined,
@@ -13,42 +12,55 @@ function SignUpModal() {
     password_confirm: undefined,
   });
 
-
   const [registredStatus, setregistredStatus] = useState(null);
   const [registerError, setregisterError] = useState("");
 
-  const registerButton = async() => {
-      try {
-
-        // validate inputs 
-        if (!registerParams.username ||!registerParams.email ||!registerParams.first_name ||!registerParams.last_name ||!registerParams.password ||!registerParams.password_confirm) {
-          registredStatus("All fields are required");
-        }
-
-        if (registerParams.password!== registerParams.password_confirm) {
-          registredStatus("Passwords do not match");
-        } 
-        if (registerParams.password == registerParams.password_confirm) {
-          await axios.post("http://127.0.0.1:3000/api/users/register", registerParams);
-          setregistredStatus("ok");
-        }
-        
-      } catch (err) {
-        setregistredStatus("notok");
-        setregisterError(err);
+  const registerButton = async () => {
+    try {
+      if (
+        !registerParams.username ||
+        !registerParams.email ||
+        !registerParams.first_name ||
+        !registerParams.last_name ||
+        !registerParams.password ||
+        !registerParams.password_confirm
+      ) {
+        registredStatus("All fields are required");
       }
+
+      if (registerParams.password !== registerParams.password_confirm) {
+        registredStatus("Passwords do not match");
+      }
+      if (registerParams.password == registerParams.password_confirm) {
+        await axios.post(
+          "http://127.0.0.1:3000/api/users/register",
+          registerParams
+        );
+        setregistredStatus("ok");
+      }
+    } catch (err) {
+      setregistredStatus("notok crash");
+      setregisterError(err);
+    }
   };
 
   const renderRegisterMessage = () => {
     if (registredStatus == "ok") {
       return (
         <p className="alert alert-success">
-          Hey {registerParams.username}, you have successfully registered to Message2Go.
+          Hey {registerParams.username}, you have successfully registered to
+          Message2Go.
         </p>
       );
     }
 
-    if (registredStatus == "notok" || registredStatus == "Passwords do not match" || registredStatus == "All fields are required") {
+    if (
+      registredStatus == "notok crash" ||
+      registredStatus == "Passwords do not match" ||
+      registredStatus == "All fields are required" 
+    ) {
+      console.log(registredStatus);
+      
       return (
         <p className="alert alert-danger">
           Something went wrong, check empty fields or password.
@@ -56,7 +68,7 @@ function SignUpModal() {
       );
     }
 
-    return null; 
+    return null;
   };
 
   const [show, setShow] = useState(false);
@@ -79,78 +91,88 @@ function SignUpModal() {
           <Modal.Title>Sign-up to Message2Go platform</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Control
-            className="mb-2"
-            type="text"
-            name="username"
-            placeholder="Username..."
-            onChange={(e) =>
-              setRegisterParams({ ...registerParams, username: e.target.value })
-            }
-          />
-          <Form.Control
-            className="mb-2"
-            type="text"
-            name="fname"
-            placeholder="First Name..."
-            onChange={(e) =>
-              setRegisterParams({
-                ...registerParams,
-                first_name: e.target.value,
-              })
-            }
-          />
-          <Form.Control
-            className="mb-2"
-            type="text"
-            name="lname"
-            placeholder="Last Name..."
-            onChange={(e) =>
-              setRegisterParams({
-                ...registerParams,
-                last_name: e.target.value,
-              })
-            }
-          />
-          <Form.Control
-            className="mb-2"
-            type="email"
-            name="email"
-            placeholder="Email..."
-            onChange={(e) =>
-              setRegisterParams({ ...registerParams, email: e.target.value })
-            }
-          />
-          <Form.Control
-            className="mb-2"
-            type="password"
-            name="password"
-            placeholder="Password..."
-            onChange={(e) =>
-              setRegisterParams({ ...registerParams, password: e.target.value })
-            }
-          />
-          <Form.Control
-            className="mb-2"
-            type="password"
-            name="password-confirm"
-            placeholder="Confirm Password..."
-            onChange={(e) =>
-              setRegisterParams({
-                ...registerParams,
-                password_confirm: e.target.value,
-              })
-            }
-          />
 
-          {renderRegisterMessage()}
+        {renderRegisterMessage()}
 
+
+
+          <Form onSubmit={(e)=>{e.preventDefault(), registerButton()}}>
+            <Form.Control
+              className="mb-2"
+              type="text"
+              name="username"
+              placeholder="Username..."
+              onChange={(e) =>
+                setRegisterParams({
+                  ...registerParams,
+                  username: e.target.value,
+                })
+              }
+            />
+            <Form.Control
+              className="mb-2"
+              type="text"
+              name="fname"
+              placeholder="First Name..."
+              onChange={(e) =>
+                setRegisterParams({
+                  ...registerParams,
+                  first_name: e.target.value,
+                })
+              }
+            />
+            <Form.Control
+              className="mb-2"
+              type="text"
+              name="lname"
+              placeholder="Last Name..."
+              onChange={(e) =>
+                setRegisterParams({
+                  ...registerParams,
+                  last_name: e.target.value,
+                })
+              }
+            />
+            <Form.Control
+              className="mb-2"
+              type="email"
+              name="email"
+              placeholder="Email..."
+              onChange={(e) =>
+                setRegisterParams({ ...registerParams, email: e.target.value })
+              }
+            />
+            <Form.Control
+              className="mb-2"
+              type="password"
+              name="password"
+              placeholder="Password..."
+              onChange={(e) =>
+                setRegisterParams({
+                  ...registerParams,
+                  password: e.target.value,
+                })
+              }
+            />
+            <Form.Control
+              className="mb-2"
+              type="password"
+              name="password-confirm"
+              placeholder="Confirm Password..."
+              onChange={(e) =>
+                setRegisterParams({
+                  ...registerParams,
+                  password_confirm: e.target.value,
+                })
+              }
+            />
+
+            <Button variant="primary" type="submit">
+              Sign-up
+            </Button>
+
+          </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={registerButton}>
-            Sign-up
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );
