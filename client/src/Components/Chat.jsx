@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Button } from "react-bootstrap";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 import NewChat from "./NewChat";
 import InputChat from "./InputChat";
 import HeaderButtonsChat from "./HeaderButtonsChat";
@@ -7,6 +9,19 @@ import HeaderButtonsChat from "./HeaderButtonsChat";
 function Chat() {
 
   const [messages, setMessages] = useState([]);
+  const [cookies, setCookie, removeCookie]  = useCookies(["token"]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  const checkToken = () => {
+    if (!cookies.token) {
+      navigate('/');
+    } 
+  }
 
   // useEffect(() => {
   //   const fetchMessages = async () => {
@@ -32,7 +47,7 @@ function Chat() {
 
           <div className="chat-container mt-4 d-flex flex-row justify-content-center">
 
-            <div className="user-chats col-3 bg-primary bg-opacity-75 p-3 me-2 border-1 rounded-5 d-flex flex-column">
+            <div className="user-chats col-2 bg-primary bg-opacity-75 p-3 me-2 border-1 rounded-5 d-flex flex-column">
               <NewChat/>
               <div className="registered-chats mt-3">
                 <ul>
@@ -59,7 +74,7 @@ function Chat() {
               </div>
             </div>
 
-            <div className="user-current-chat col-8 bg-primary bg-opacity-75 p-3 ms-2 border-1 rounded-5 d-flex flex-column justify-content-between">
+            <div className="user-current-chat col-9 bg-primary bg-opacity-75 p-3 ms-2 border-1 rounded-5 d-flex flex-column justify-content-between">
               <div className="chat-current-msgs">
                 Test test test
               </div>
