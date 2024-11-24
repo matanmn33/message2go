@@ -6,7 +6,7 @@ const createToken = (userId) => {
 };
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = req.cookies.token;
   
   if (!token) {
     return res.status(403).send('Token required');
