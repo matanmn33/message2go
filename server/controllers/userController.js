@@ -11,6 +11,26 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const FindUserByID = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const user = await User.findOne({_id: id});
+    res.send(user);
+  } catch (err) {
+    res.send("Could not fetch all users, ERROR: " + err.message);
+  }
+};
+
+const UpdateUserByID = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const user = await User.findOneAndUpdate({_id: id}, {first_name: req.body.first_name, last_name: req.body.last_name});
+    res.send(user);
+  } catch (err) {
+    res.send("Could not fetch all users, ERROR: " + err.message);
+  }
+};
+
 const registerUser = async (req, res) => {
   try {
     const newUser = new User({
@@ -59,4 +79,6 @@ module.exports = {
   registerUser,
   getAllUsers,
   loginUser,
+  FindUserByID,
+  UpdateUserByID
 };

@@ -3,7 +3,6 @@ import axios from "axios";
 import { Container, Button } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
 import Menu from "./Menu";
 import NewChat from "./NewChat";
 import InputChat from "./InputChat";
@@ -22,22 +21,6 @@ function Chat() {
       console.error("Error fetching users:", error);
     }
   };
-  
-
-  const [connectedUser, setConnectedUser] = useState();
-  console.log(connectedUser);
-
-  const userDecoded = () => {
-    if (cookies.token) {
-      try {
-        const decodedToken = jwtDecode(cookies.token);
-        setConnectedUser(decodedToken);
-      } catch (error) {
-        throw error;
-      }
-    }
-  }
-
 
   const [messages, setMessages] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
@@ -46,7 +29,6 @@ function Chat() {
 
   useEffect(() => {
     checkToken();
-    userDecoded();
     getUsers();
   }, []);
 
@@ -58,13 +40,14 @@ function Chat() {
 
   return (
     <>
-      <Menu />
+     
+      <Menu/>
 
       <Container fluid>
         <div className="chat-main">
           <div className="chat-container mt-4 d-flex flex-row justify-content-center">
             <div className="user-chats col-2 bg-primary bg-opacity-75 p-3 me-2 border-1 rounded-5 d-flex flex-column">
-              <NewChat connectedUser={connectedUser}/>
+              <NewChat/>
               <div className="registered-chats mt-3">
                 <ul>
                   {/* Render chat names here */}
@@ -76,7 +59,7 @@ function Chat() {
               <div className="chat-current-msgs">
                 {/* Render messages here */}
               </div>
-              <InputChat connectedUser={connectedUser}/>
+              <InputChat/>
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ function Menu() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <div className="d-flex m-0 p-0 ms-auto">
-            <HeaderButtonsChat />
+            <HeaderButtonsChat/>
           </div>
         </Navbar.Collapse>
       </Container>
