@@ -10,6 +10,7 @@ function SettingsPage() {
   const [cookies] = useCookies(["token"]);
 
   const [connectedUser, setConnectedUser] = useState({});
+  const [alert, setAlert] = useState(false);
 
   const userDecoded = async () => {
     if (cookies.token) {
@@ -45,15 +46,31 @@ function SettingsPage() {
     last_name: "",
   });
 
-  const saveSettings = () => {
-    axios
-     .post(`http://localhost:3000/api/users/updateUser/${connectedUser._id}`, userInfo)
-     .then(() => {
-        setConnectedUser({...connectedUser});
-      })
-     .catch((error) => {
-        console.error("Error updating user:", error);
-      });
+  const saveSettings = async () => {
+    try {
+      await axios.post(
+        `http://localhost:3000/api/users/updateUser/${connectedUser._id}`,
+        userInfo
+      );
+      setConnectedUser({ ...connectedUser, ...userInfo });
+      setAlert(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const alertPush = () => {
+    if (alert == true) {
+      return (
+        <div>
+          <p className="userinfo-update alert alert-success mx-2 mt-3 p-2 rounded-3">
+            User updated!
+          </p>
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -61,12 +78,12 @@ function SettingsPage() {
       <Menu />
 
       <Container>
-        <div className="w-50 mx-auto">
+        <div className="w-lg-50 mx-auto">
           <h3 className="mt-2 pb-2">User Information Settings</h3>
 
           <Form.Label className="badge bg-secondary mt-4">Username</Form.Label>
           <Form.Control
-            className="w-90 mx-2 rounded-3 mt-2"
+            className="w-90 me-2 rounded-3 mt-2"
             type="text"
             name="username"
             placeholder={connectedUser?.username}
@@ -75,7 +92,7 @@ function SettingsPage() {
 
           <Form.Label className="badge bg-secondary mt-4">Email</Form.Label>
           <Form.Control
-            className="w-90 mx-2 rounded-3 mt-2"
+            className="w-90 me-2 rounded-3 mt-2"
             type="text"
             name="email"
             placeholder={connectedUser?.email}
@@ -86,33 +103,35 @@ function SettingsPage() {
           </Form.Label>
 
           <Form.Control
-            className="w-90 mx-2 rounded-3 mt-2"
+            className="w-90 me-2 rounded-3 mt-2"
             type="text"
             name="first_name"
             placeholder={connectedUser?.first_name}
             onChange={(e) => {
-              setUserInfo({...userInfo, first_name: e.target.value });
+              setUserInfo({ ...userInfo, first_name: e.target.value });
             }}
           />
 
           <Form.Label className="badge bg-secondary mt-4">Last Name</Form.Label>
 
           <Form.Control
-            className="w-90 mx-2 rounded-3 mt-2"
+            className="w-90 me-2 rounded-3 mt-2"
             type="text"
             name="last_name"
             placeholder={connectedUser?.last_name}
             onChange={(e) => {
-              setUserInfo({...userInfo, last_name: e.target.value });
+              setUserInfo({ ...userInfo, last_name: e.target.value });
             }}
           />
           <Button
             variant="success"
-            className="send-msg-btn rounded-2 mx-2 w-10 mt-4"
+            className="send-msg-btn rounded-2 me-2 w-10 mt-4"
             onClick={saveSettings}
           >
             Save
           </Button>
+
+          {alertPush()}
         </div>
       </Container>
     </>

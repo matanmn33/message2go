@@ -7,12 +7,22 @@ function HeaderButtonsChat() {
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
   const logoutBtn = () => {
-    removeCookie("token", { path: "/" }); 
+    removeCookie("token", { path: "/" });
   };
 
   return (
     <>
       <div className="chat-header-buttons d-flex flex-column flex-lg-row gap-2 mt-1 mt-lg-0">
+        <Button
+          variant="light"
+          className="btn-sm all-users-btn rounded-4 m-0 ps-2 py-1 float-start"
+          as={Link}
+          to={"/search-users"}
+        >
+          <i className="bi bi-search me-2"></i>
+          Search Users
+        </Button>
+
         <Button
           variant="light"
           className="btn-sm contacts-btn rounded-4 m-0 ps-2 py-1 float-start"
@@ -34,7 +44,7 @@ function HeaderButtonsChat() {
         <Button
           as={Link}
           to={"/"}
-          onClick={()=> logoutBtn()}
+          onClick={() => logoutBtn()}
           variant="danger"
           className="btn-sm logout-btn rounded-4 m-0 ps-2 py-1"
         >

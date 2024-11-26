@@ -9,6 +9,8 @@ router.get('/getUser/:id', userController.FindUserByID);
 
 router.post('/updateUser/:id', userController.UpdateUserByID);  
 
+router.post('/addContact/:id', userController.AddContact);  
+
 router.post('/register', userController.registerUser);
 
 router.post('/login', userController.loginUser);

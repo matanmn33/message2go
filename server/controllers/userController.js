@@ -4,7 +4,7 @@ const User = require("../models/userModel");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("_id username");
     res.send(users);
   } catch (err) {
     res.send("Could not fetch all users, ERROR: " + err.message);
@@ -24,7 +24,32 @@ const FindUserByID = async (req, res) => {
 const UpdateUserByID = async (req, res) => {
   try {
     const {id} = req.params;
-    const user = await User.findOneAndUpdate({_id: id}, {first_name: req.body.first_name, last_name: req.body.last_name});
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      {
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+          updated_at: new Date()
+      }, {new: true}
+    );
+    await user.save();
+    res.send(user);
+  } catch (err) {
+    res.send("Could not fetch all users, ERROR: " + err.message);
+  }
+};
+
+const AddContact = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const user = await User.findOneAndUpdate(
+      { _id: id },
+      {
+          contacts: req.body.contacts,
+          updated_at: new Date()
+      }, {new: true}
+    );
+    await user.save();
     res.send(user);
   } catch (err) {
     res.send("Could not fetch all users, ERROR: " + err.message);
@@ -80,5 +105,6 @@ module.exports = {
   getAllUsers,
   loginUser,
   FindUserByID,
-  UpdateUserByID
+  UpdateUserByID,
+  AddContact
 };
