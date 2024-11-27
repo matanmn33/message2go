@@ -82,9 +82,12 @@ function SearchUsers() {
     }
   };
 
-  const searchResult = () => {    
+  const searchResult = () => {       
     if (searchUser == "") {
       return null;
+    }
+    if (searchUser.username == connectedUser.username) {
+      return "You search for yourself! Can't do that...";
     }
     if (searchUser != "Not Found.") {
       return (
@@ -152,7 +155,7 @@ function SearchUsers() {
               Do you see someone you already know and want to add as a Contact?
             </p>
             <ul className="m-0 p-0">
-              {getUsers.map((user) => (
+              {getUsers.map((user) => ( user.username == connectedUser.username ? null : 
                 <li key={user._id} className="search-users-li">
                   <span className="fs-5 me-2">{user.username}</span>
                   <Button
