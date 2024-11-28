@@ -51,26 +51,32 @@ function SearchUsers() {
     }
   };
 
-  const [userContacts, setUserContacts] = useState({
-    contacts: [],
-  });
+  const [userContacts, setUserContacts] = useState({});
 
-  const addContact = async () => {
+  const addContact = async (username) => {
     try {
-      await axios.post(
-        `http://localhost:3000/api/users/addContact/${connectedUser._id}`,
-        userContacts
-      );
-      setConnectedUser({ ...connectedUser, ...userContacts });
+    const updatedContacts = connectedUser.contacts || [];
+
+    if (updatedContacts.includes(username)) {
+      console.log("Username already in contacts list.");
+      return;
+    }
+    const newContacts = [...updatedContacts, username];
+
+    setConnectedUser((prevUser) => ({
+      ...prevUser,
+      contacts: newContacts,
+    }));
+
+    await axios.post(
+      `http://localhost:3000/api/users/addContact/${connectedUser._id}`,
+      { contacts: newContacts } 
+    );
     } catch (err) {
       console.log(err);
     }
   };
 
-  const handleAddUser = (user) => {
-    setUserContacts({ contacts: [...connectedUser.contacts, user ]});
-    addContact();
-  };
 
   const searchForUser = (e) => {
     const { value } = e.target.previousElementSibling;
@@ -93,14 +99,13 @@ function SearchUsers() {
       return (
         <>
           <div className="search-result bg-success bg-opacity-50 rounded-4 p-3 w-50 mt-2">
-            <p className="mt-2">Search Result:</p>
             <ul className="m-0 p-0">
-              <li key={searchUser._id} className="search-users-li">
+              <li key={searchUser._id} className="type-li">
                 <span className="fs-5 me-2">{searchUser.username}</span>
                 <Button
                   variant="primary"
                   className="btn-sm rounded-4 m-1 px-2 py-1"
-                  onClick={() => handleAddUser(searchUser)}
+                  onClick={() => addContact(searchUser.username)}
                 >
                   Add as Contact
                 </Button>
@@ -125,8 +130,11 @@ function SearchUsers() {
       <Container>
         <div className="w-lg-50 mx-auto">
           <h3 className="mt-2 pb-2">Search Users</h3>
-          <p>
+          <p className="fw-semibold">
             Search for new Contacts from Message2Go and add them as you wish.
+          </p>
+          <p className="alert alert-warning">
+            Notice! You have to write the exact username in order to find the contact!
           </p>
 
           <div className="d-flex flex-row align-items-baseline">
@@ -161,7 +169,7 @@ function SearchUsers() {
                   <Button
                     variant="secondary"
                     className="btn-sm rounded-4 m-1 px-2 py-1"
-                    onClick={() => handleAddUser(user)}
+                    onClick={() => addContact(user.username)}
                   >
                     Add as Contact
                   </Button>

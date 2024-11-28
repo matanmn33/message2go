@@ -125,7 +125,7 @@ function SettingsPage() {
           />
           <Button
             variant="success"
-            className="send-msg-btn rounded-2 me-2 w-10 mt-4"
+            className="send-msg-btn rounded-4 me-2 w-10 mt-3"
             onClick={saveSettings}
           >
             Save

@@ -4,6 +4,7 @@ import Home from './Home.jsx';
 import Chat from './Chat.jsx';
 import Settings from './Settings.jsx';
 import SearchUsers from './SearchUsers.jsx';
+import Contacts from './Contacts.jsx';
 
 function AppRoutes() {
   return (
@@ -12,6 +13,7 @@ function AppRoutes() {
       <Route path="/chat" element={<Chat />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/search-users" element={<SearchUsers />} />
+      <Route path="/contacts" element={<Contacts />} />
     </Routes>
   );
 }

@@ -26,6 +26,8 @@ function HeaderButtonsChat() {
         <Button
           variant="light"
           className="btn-sm contacts-btn rounded-4 m-0 ps-2 py-1 float-start"
+          as={Link}
+          to={"/contacts"}
         >
           <i className="bi bi-people me-2"></i>
           Contacts

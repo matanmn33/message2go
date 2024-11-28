@@ -16,9 +16,12 @@
 .chat-container {
   height: 80vh;
 }
-.search-users-li {
+.type-li {
   list-style: none;
 }
 .all-users-heading {
+  width: fit-content;
+}
+.hello-user {
   width: fit-content;
 }
