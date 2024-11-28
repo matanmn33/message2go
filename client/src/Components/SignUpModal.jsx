@@ -79,7 +79,7 @@ function SignUpModal() {
     <>
       <Button
         variant="primary"
-        className="rounded-5 p-3 fs-4 m-2"
+        className="rounded-5 p-3 fs-4 m-2 w-100"
         onClick={handleShow}
       >
         Sign-up
