@@ -58,7 +58,7 @@ function SearchUsers() {
     const updatedContacts = connectedUser.contacts || [];
 
     if (updatedContacts.includes(username)) {
-      console.log("Username already in contacts list.");
+      alert("Username already in contacts list.");
       return;
     }
     const newContacts = [...updatedContacts, username];
