@@ -11,6 +11,10 @@ router.post('/updateUser/:id', userController.UpdateUserByID);
 
 router.post('/addContact/:id', userController.AddContact);  
 
+router.post('/newChat', userController.NewChat);  
+
+router.post('/addChat', userController.AddChat);  
+
 router.post('/register', userController.registerUser);
 
 router.post('/login', userController.loginUser);

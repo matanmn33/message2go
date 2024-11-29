@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const Auth = require("./authController");
 const User = require("../models/userModel");
+const Chat = require("../models/chatModel");
+const Message = require("../models/messageModel");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -100,11 +102,44 @@ const loginUser = async (req, res) => {
   }
 };
 
+const NewChat = async (req, res) => {
+  try {
+    const { chatid, from, to, message } = req.body;
+    const newMsg = new Message({ chatid, from, to, message });
+    await newMsg.save();
+    res.send("Chat created successfully");
+  } catch (err) {
+    res.send(
+      "Could not register a new Chat to the system, ERROR: " + err.message
+    );
+  }
+};
+
+const AddChat = async (req, res) => {
+  try {
+    const { chatid, members } = req.body;
+    const existingChat = await Chat.findOne({ chatid });
+    if (existingChat) {
+      return res.status(400).send("Chat already exists");
+    }
+
+    const newChat = new Chat({ chatid, members });
+    await newChat.save();
+    res.send("Chat created successfully");
+  } catch (err) {
+    res.send(
+      "Could not register a new Chat to the system, ERROR: " + err.message
+    );
+  }
+};
+
 module.exports = {
   registerUser,
   getAllUsers,
   loginUser,
   FindUserByID,
   UpdateUserByID,
-  AddContact
+  AddContact,
+  NewChat,
+  AddChat
 };

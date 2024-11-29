@@ -79,11 +79,11 @@ function SettingsPage() {
 
       <Container>
         <div className="w-lg-50 mx-auto">
-          <h3 className="mt-2 pb-2">User Information Settings</h3>
+          <h3 className="pb-0 mt-0">User Information Settings</h3>
 
-          <Form.Label className="badge bg-secondary mt-4">Username</Form.Label>
+          <Form.Label className="badge bg-secondary mt-2">Username</Form.Label>
           <Form.Control
-            className="w-90 me-2 rounded-3 mt-2"
+            className="w-90 me-2 rounded-3"
             type="text"
             name="username"
             placeholder={connectedUser?.username}

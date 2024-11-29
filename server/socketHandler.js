@@ -7,28 +7,27 @@ io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.id}`);
   
     // When a user joins a chat
-    socket.on("join_room", async (chatname) => {
+    socket.on("join_room", async (chatid) => {
       // Check if the chat room exists
-      let chat = await Chat.findOne({ chatname });
+      let chat = await Chat.findOne({ chatid });
       if (!chat) {
         // Create a new chat room if it doesn't exist
-        chat = new Chat({ chatname });
+        chat = new Chat({ chatid });
         await chat.save();
       }
-      socket.join(chatname);
-      console.log(`User with ID: ${socket.id} joined room: ${chatname}`);
+      socket.join(chatid);
+      console.log(`User with ID: ${socket.id} joined room: ${chatid}`);
     });
   
     // Handle sending a message
     socket.on("send_message", async (data) => {
-      const { chat, from, to, message } = data;
+      const { chatid, from, to, message } = data;
   
       // Save the message to the database
-      const newMessage = new Message({ chat, from, to, message });
+      const newMessage = new Message({ chatid, from, to, message });
       await newMessage.save();
-  
       // Emit the message to all users in the room
-      socket.to(chat).emit("receive_message", newMessage);
+      socket.to(chatid).emit("receive_message", newMessage);
     });
   
     // When a user disconnects

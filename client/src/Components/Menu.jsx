@@ -47,7 +47,7 @@ function Menu() {
       </Container>
     </Navbar>
 
-    <p className="hello-user alert alert-info p-2 m-3">Logged as: <span className="text-decoration-underline fw-semibold">{connectedUser.username}</span>, Good to see you! Gimme My MONEY!</p>
+    <p className="hello-user alert alert-info p-2 m-3">Logged as: <span className="text-decoration-underline fw-semibold">{connectedUser.username}</span>.</p>
     </>
   );
 }

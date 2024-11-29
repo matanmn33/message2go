@@ -11,6 +11,8 @@ function SearchUsers() {
 
   const [connectedUser, setConnectedUser] = useState({});
 
+  let ToastContent;
+
   const userDecoded = async () => {
     if (cookies.token) {
       try {
@@ -58,7 +60,8 @@ function SearchUsers() {
     const updatedContacts = connectedUser.contacts || [];
 
     if (updatedContacts.includes(username)) {
-      alert("Username already in contacts list.");
+      ToastContent = "Username already in contacts list.";
+      alert(ToastContent);
       return;
     }
     const newContacts = [...updatedContacts, username];
@@ -72,6 +75,8 @@ function SearchUsers() {
       `http://localhost:3000/api/users/addContact/${connectedUser._id}`,
       { contacts: newContacts } 
     );
+    ToastContent = "User added to the Contacts list.";
+    alert(ToastContent)
     } catch (err) {
       console.log(err);
     }
@@ -164,7 +169,7 @@ function SearchUsers() {
             </p>
             <ul className="m-0 p-0">
               {getUsers.map((user) => ( user.username == connectedUser.username ? null : 
-                <li key={user._id} className="search-users-li">
+                <li key={user._id} className="type-li">
                   <span className="fs-5 me-2">{user.username}</span>
                   <Button
                     variant="secondary"
@@ -178,6 +183,7 @@ function SearchUsers() {
             </ul>
           </div>
         </div>
+
       </Container>
     </>
   );
