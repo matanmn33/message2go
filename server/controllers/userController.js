@@ -3,6 +3,8 @@ const Auth = require("./authController");
 const User = require("../models/userModel");
 const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
+const { createOrUpdateMessage } = require("../services/chatService");
+
 
 const getAllUsers = async (req, res) => {
   try {
@@ -103,15 +105,14 @@ const loginUser = async (req, res) => {
 };
 
 const NewChat = async (req, res) => {
+  const { chatid, from, to, message } = req.body;
+
   try {
-    const { chatid, from, to, message } = req.body;
-    const newMsg = new Message({ chatid, from, to, message });
-    await newMsg.save();
-    res.send("Chat created successfully");
-  } catch (err) {
-    res.send(
-      "Could not register a new Chat to the system, ERROR: " + err.message
-    );
+    const result = await createOrUpdateMessage({ chatid, from, to, message });
+    res.status(200).json({ success: true, message: "Message added successfully!", result });
+  } catch (error) {
+    console.error("Error adding message:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -133,6 +134,26 @@ const AddChat = async (req, res) => {
   }
 };
 
+const FindAllChats = async (req, res) => {
+  try {
+    const chats = await Chat.find();
+    if (chats.length > 0) {
+      res.send(chats);
+    }
+  } catch (err) {
+    res.send("Could not get the stated chat, Error: " + err);
+  }
+}
+
+const FindMessageByID = async (req, res) => {
+  try {
+    const current_message = await Message.findOne({chatid: req.params.chatid});
+    res.send(current_message);
+  } catch (err) {
+    res.send("Could not get the stated chat, Error: " + err);
+  }
+}
+
 module.exports = {
   registerUser,
   getAllUsers,
@@ -141,5 +162,7 @@ module.exports = {
   UpdateUserByID,
   AddContact,
   NewChat,
-  AddChat
+  AddChat,
+  FindAllChats,
+  FindMessageByID
 };

@@ -62,7 +62,7 @@ function NewChat({ connectedUser }) {
         members: [connectedUser.username, selectedContact],
       });
 
-      socket.emit("send_message",         {
+      socket.emit("send_message", {
         chatid: chatID,
         from: connectedUser.username,
         to: selectedContact,
@@ -86,7 +86,7 @@ function NewChat({ connectedUser }) {
     <>
       <Button
         variant="secondary"
-        className="rounded-5 new-chat ps-2 w-100"
+        className="rounded-5 new-chat ps-2 mt-3 mx-auto"
         onClick={handleShow}
       >
         <i className="bi bi-chat-dots me-2"></i> Create a new Chat

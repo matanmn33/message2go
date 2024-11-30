@@ -25,3 +25,9 @@
 .hello-user {
   width: fit-content;
 }
+.chat-list {
+  cursor: pointer;
+}
+.chat-list:hover {
+  background: #0000006b;
+}

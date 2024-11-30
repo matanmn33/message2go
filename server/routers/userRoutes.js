@@ -15,6 +15,10 @@ router.post('/newChat', userController.NewChat);
 
 router.post('/addChat', userController.AddChat);  
 
+router.get('/getChats', userController.FindAllChats);
+
+router.get('/getMessage/:chatid', userController.FindMessageByID);
+
 router.post('/register', userController.registerUser);
 
 router.post('/login', userController.loginUser);
