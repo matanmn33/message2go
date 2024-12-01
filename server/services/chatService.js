@@ -1,18 +1,18 @@
 const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
 
-const createOrUpdateMessage = async ({ chatid, from, to, message }) => {
+const createOrUpdateMessage = async ({ chatid, from, to, message, sender }) => {
   let messageDoc = await Message.findOne({ chatid });
 
   if (messageDoc) {
-    messageDoc.messages.push({ message, createdAt: new Date() });
+    messageDoc.messages.push({ message, sender, createdAt: new Date() });
     await messageDoc.save();
   } else {
     const newMessageDoc = new Message({
       chatid,
       from,
       to,
-      messages: [{ message, createdAt: new Date() }],
+      messages: [{ message, sender, createdAt: new Date() }],
     });
     await newMessageDoc.save();
   }
@@ -24,11 +24,12 @@ const findMessagesByChatId = async (chatid) => {
 };
 
 const createOrFindChat = async (chatid, members = []) => {
-  let chat = await Chat.findOne({ chatid });
+  let chat = await Chat.findOne(chatid);
   if (!chat) {
     chat = new Chat({ chatid, members });
     await chat.save();
   }
+  console.log(chat);
   return chat;
 };
 

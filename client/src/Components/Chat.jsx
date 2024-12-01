@@ -92,7 +92,7 @@ function Chat() {
                       </a> 
                     ))
                   ) : (
-                    <p>No chats available.</p>
+                    <p className="px-2 mx-auto">No chats available.</p>
                   )}
               </div>
             </div>
@@ -107,7 +107,7 @@ function Chat() {
                       </div>
                     ))
                   ) : (
-                    <p>No messages available.</p>
+                    <p className="px-2">No messages available.</p>
                   )
                 }
               </div>

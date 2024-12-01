@@ -105,10 +105,10 @@ const loginUser = async (req, res) => {
 };
 
 const NewChat = async (req, res) => {
-  const { chatid, from, to, message } = req.body;
+  const { chatid, from, to, message, sender } = req.body;
 
   try {
-    const result = await createOrUpdateMessage({ chatid, from, to, message });
+    const result = await createOrUpdateMessage({ chatid, from, to, message, sender });
     res.status(200).json({ success: true, message: "Message added successfully!", result });
   } catch (error) {
     console.error("Error adding message:", error);

@@ -11,7 +11,7 @@ function NewChat({ connectedUser }) {
   const [selectedContact, setSelectedContact] = useState("");
 
   const [newMessage, setNewMessage] = useState({
-    chatID: "",
+    chatid: "",
     to: "",
     from: "",
     message: "",
@@ -36,13 +36,13 @@ function NewChat({ connectedUser }) {
       return;
     }
 
-    const chatID = uid();
+    const chatid = uid();
 
     try {
       const chatResponse = await axios.post(
         "http://localhost:3000/api/users/addChat",
         {
-          chatid: chatID,
+          chatid: chatid,
           members: [connectedUser.username, selectedContact],
         }
       );
@@ -50,23 +50,25 @@ function NewChat({ connectedUser }) {
       const messageResponse = await axios.post(
         "http://localhost:3000/api/users/newChat",
         {
-          chatid: chatID,
+          chatid: chatid,
           from: connectedUser.username,
           to: selectedContact,
           message: newMessage.message,
+          sender: connectedUser.username
         }
       );
 
       socket.emit("join_room", {
-        chatID,
+        chatid,
         members: [connectedUser.username, selectedContact],
       });
 
       socket.emit("send_message", {
-        chatid: chatID,
+        chatid: chatid,
         from: connectedUser.username,
         to: selectedContact,
         message: newMessage.message,
+        sender: connectedUser.username,
       });
 
       setShow(false);

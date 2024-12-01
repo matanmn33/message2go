@@ -7,7 +7,7 @@ const socketHandler = (io) => {
     socket.on("join_room", async (chatid) => {
       try {
         const chat = await createOrFindChat(chatid);
-        socket.join(chatid);
+        socket.join(chat);
         console.log(`User with ID: ${socket.id} joined room: ${chatid}`);
       } catch (error) {
         console.error("Error joining room:", error);
@@ -16,11 +16,11 @@ const socketHandler = (io) => {
 
     socket.on("send_message", async (data) => {
       try {
-        const { chatid, from, to, message } = data;
+        const { chatid, from, to, message, sender } = data;
 
-        const result = await createOrUpdateMessage({ chatid, from, to, message });
+        const result = await createOrUpdateMessage({ chatid, from, to, message, sender });
 
-        socket.to(chatid).emit("receive_message", { chatid, from, to, message });
+        socket.to(chatid).emit("receive_message", { chatid, from, to, message, sender });
       } catch (error) {
         console.error("Error sending message:", error);
       }

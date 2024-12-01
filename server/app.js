@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const dbConnection = require('./config/dbConnection');
 const userRoutes = require('./routers/userRoutes');
-const messageRoutes = require('./routers/messageRoute');
+// const messageRoutes = require('./routers/messageRoute');
 const chatRoutes = require('./routers/chatRoute');
 
 const app = express();  
@@ -33,7 +33,7 @@ const io = new Server(server, {
 socketHandler(io);
 
 app.use('/api/users', userRoutes);
-app.use('/api/messages', messageRoutes);
+// app.use('/api/messages', messageRoutes);
 app.use('/api/chat', chatRoutes);
 
 server.listen(process.env.PORT, () => {
