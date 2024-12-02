@@ -24,7 +24,7 @@ const findMessagesByChatId = async (chatid) => {
 };
 
 const createOrFindChat = async (chatid, members = []) => {
-  let chat = await Chat.findOne(chatid);
+  let chat = await Chat.findOne({chatid});
   if (!chat) {
     chat = new Chat({ chatid, members });
     await chat.save();
