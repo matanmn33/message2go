@@ -1,27 +1,45 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
+import axios from "axios";
+import io from "socket.io-client";
 
-function InputChat({connectedUser}) {
+const socket = io("http://localhost:3000");
+
+function InputChat({ connectedUser, chatid, selectedContact }) {
+
+  socket.emit("join_room", chatid); // Join the room with the chatid
+
   const [message, setMessage] = useState("");
 
-  // Handle the change in the message input field
   const handleMessageChange = (e) => {
     setMessage(e.target.value);
   };
 
-  // Handle sending the message
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      const messageData = {
-        chatid,
-        from: connectedUser?.userId,
-        to: selectedContact?.userId,  // Use the selected contact's userId here
-        message,
-        sender: connectedUser?.username,
-      };
+  const handleSendMessage = async () => {
+    if (!message.trim() || !chatid) {
+      console.warn("Message or chat ID is missing.");
+      return;
+    }
 
-      sendMessage(messageData); // Call the sendMessage function passed from Chat.js
-      setMessage(""); // Clear the input field after sending the message
+    const messageData = {
+      chatid,
+      from: connectedUser?.userId,
+      to: selectedContact?.userId,
+      message,
+      sender: connectedUser?.username,
+    };
+
+    try {
+      // Emit the message via socket
+      socket.emit("send_message", messageData);
+
+      // Optionally send to the backend for persistence
+      await axios.post("http://localhost:3000/api/users/newChat", messageData);
+
+      // Clear input after sending
+      setMessage("");
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
 
@@ -33,12 +51,12 @@ function InputChat({connectedUser}) {
         name="message"
         placeholder="Write your message here..."
         value={message}
-        onChange={handleMessageChange} // Update message state when user types
+        onChange={handleMessageChange}
       />
       <Button
         variant="success"
         className="send-msg-btn rounded-5 w-10"
-        onClick={handleSendMessage} // Trigger message send on click
+        onClick={handleSendMessage}
       >
         <i className="bi bi-send me-2"></i>
       </Button>

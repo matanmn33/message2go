@@ -3,9 +3,9 @@ import { Button, Modal, Form } from "react-bootstrap";
 import axios from "axios";
 import { uid } from "uid";
 import io from "socket.io-client";
-const socket = io("http://localhost:3000"); 
+const socket = io("http://localhost:3000");
 
-function NewChat({ connectedUser }) {
+function NewChat({ connectedUser, allchats }) {
   const [show, setShow] = useState(false);
 
   const [selectedContact, setSelectedContact] = useState("");
@@ -35,10 +35,22 @@ function NewChat({ connectedUser }) {
       console.error("No contact selected!");
       return;
     }
-
+  
     const chatid = uid();
-
+  
     try {
+      // Check if a chat already exists with both users
+      const existingChat = allchats.find((c) =>
+        c.members.includes(connectedUser.username) &&
+        c.members.includes(selectedContact)
+      );
+  
+      if (existingChat) {
+        console.error("Chat with this contact already exists!");
+        return; // Prevent creating a duplicate chat
+      }
+  
+      // Proceed with creating a new chat if it doesn't exist
       const chatResponse = await axios.post(
         "http://localhost:3000/api/users/addChat",
         {
@@ -46,7 +58,7 @@ function NewChat({ connectedUser }) {
           members: [connectedUser.username, selectedContact],
         }
       );
-
+  
       const messageResponse = await axios.post(
         "http://localhost:3000/api/users/newChat",
         {
@@ -54,15 +66,15 @@ function NewChat({ connectedUser }) {
           from: connectedUser.username,
           to: selectedContact,
           message: newMessage.message,
-          sender: connectedUser.username
+          sender: connectedUser.username,
         }
       );
-
+  
       socket.emit("join_room", {
         chatid,
         members: [connectedUser.username, selectedContact],
       });
-
+  
       socket.emit("send_message", {
         chatid: chatid,
         from: connectedUser.username,
@@ -70,7 +82,7 @@ function NewChat({ connectedUser }) {
         message: newMessage.message,
         sender: connectedUser.username,
       });
-
+  
       setShow(false);
       setSelectedContact("");
     } catch (err) {
@@ -80,6 +92,7 @@ function NewChat({ connectedUser }) {
       );
     }
   };
+  
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

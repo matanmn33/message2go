@@ -13,6 +13,8 @@ function Chat() {
   const [systemUsers, setSystemUsers] = useState([]);
   const [connectedUser, setConnectedUser] = useState({});
   const [selectedContact, setSelectedContact] = useState(null);
+  const [chatAlreadyOpen, setChatAlreadyOpen] = useState(false);
+  const [currentChatId, setCurrentChatId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [chats, setChats] = useState([]);
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
@@ -77,7 +79,7 @@ function Chat() {
       const current_message = await axios.get(
         `http://localhost:3000/api/users/getMessage/${chatid}`
       );
-      const current_message_data = current_message.data;      
+      const current_message_data = current_message.data;
 
       // Only show messages relevant to the logged-in user and the selected chat
       const filteredMessages = current_message_data.messages.filter(
@@ -89,7 +91,7 @@ function Chat() {
       // Set the selected contact based on the chat
       const contact = current_message_data.to;
       setSelectedContact({ username: contact });
-
+      setCurrentChatId(chatid); // Set the current chat ID
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
@@ -114,26 +116,23 @@ function Chat() {
     }
   };
 
-  // Handle new messages via socket.io in real-time
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      // Update state if the message is for the current chat and the connected user
-      if (
-        data.chatid === connectedUser.chatid &&
-        (data.to === connectedUser.userId ||
-          data.sender === connectedUser.userId)
-      ) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { message: data.message, sender: data.sender, createdAt: new Date() },
-        ]);
-      }
-    });
 
-    return () => {
-      socket.off("receive_message");
-    };
-  }, [connectedUser]);
+// Add this to your component
+useEffect(() => {
+  // Listen for "receive_message" event from the server
+  socket.on("receive_message", (data) => {
+    console.log("New message received:", data);
+    setMessages((prevMessages) => [...prevMessages, data]); // Update state with the new message
+  });
+
+  // Cleanup the socket listener when the component unmounts
+  return () => {
+    socket.off("receive_message");
+  };
+  
+}, []);
+
+
 
   return (
     <>
@@ -143,7 +142,7 @@ function Chat() {
         <div className="chat-main">
           <div className="chat-container mt-4 d-flex flex-row justify-content-center">
             <div className="user-chats col-2 bg-primary bg-opacity-75 p-0 mx-0 border-1 rounded-5 d-flex flex-column">
-              <NewChat connectedUser={connectedUser} />
+              <NewChat connectedUser={connectedUser} allchats={chats}/>
               <div className="registered-chats mt-3 d-flex flex-column mx-0 px-0">
                 {chats.length > 0 ? (
                   chats.map((chat, i) => (
@@ -181,7 +180,11 @@ function Chat() {
                   <p className="px-2">No messages available.</p>
                 )}
               </div>
-              <InputChat connectedUser={connectedUser} />
+              <InputChat
+                connectedUser={connectedUser}
+                chatid={currentChatId}
+                selectedContact={selectedContact}
+              />
             </div>
           </div>
         </div>
