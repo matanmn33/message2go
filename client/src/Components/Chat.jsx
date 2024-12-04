@@ -55,25 +55,21 @@ function Chat() {
       );
       const dataChats = axios_chats.data;
 
-      // Filter chats that belong to the connected user
       const filteredChats = dataChats.filter((chat) =>
         chat.members.includes(connectedUser.username)
       );
 
-      // If no chats found, clear the state (or show a message)
       if (filteredChats.length === 0) {
-        setChats([]); // Set empty array or show no chats message
+        setChats([]); 
         return;
       }
 
-      // Set the filtered chats to state
       setChats(filteredChats);
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
   };
 
-  // Update messages when a chat is selected
   const showCurrentChat = async (chatid) => {
     try {
       const current_message = await axios.get(
@@ -81,17 +77,15 @@ function Chat() {
       );
       const current_message_data = current_message.data;
 
-      // Only show messages relevant to the logged-in user and the selected chat
       const filteredMessages = current_message_data.messages.filter(
         (msg) =>
           msg.sender === connectedUser.userId || msg.to === connectedUser.userId
       );
       setMessages(filteredMessages);
 
-      // Set the selected contact based on the chat
       const contact = current_message_data.to;
       setSelectedContact({ username: contact });
-      setCurrentChatId(chatid); // Set the current chat ID
+      setCurrentChatId(chatid); 
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
@@ -108,7 +102,7 @@ function Chat() {
     if (connectedUser?.username) {
       getChats();
     }
-  }, [connectedUser]); // Trigger getChats whenever connectedUser changes
+  }, [connectedUser]); 
 
   const checkToken = () => {
     if (!cookies.token) {
@@ -117,15 +111,13 @@ function Chat() {
   };
 
 
-// Add this to your component
+
 useEffect(() => {
-  // Listen for "receive_message" event from the server
   socket.on("receive_message", (data) => {
     console.log("New message received:", data);
-    setMessages((prevMessages) => [...prevMessages, data]); // Update state with the new message
+    setMessages((prevMessages) => [...prevMessages, data]); 
   });
 
-  // Cleanup the socket listener when the component unmounts
   return () => {
     socket.off("receive_message");
   };

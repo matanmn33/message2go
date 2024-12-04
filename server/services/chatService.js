@@ -5,11 +5,10 @@ const createOrUpdateMessage = async ({ chatid, from, to, message, sender }) => {
     let messageDoc = await Message.findOne({ chatid });
   
     if (messageDoc) {
-      // Check for duplicate message
       const isDuplicate = messageDoc.messages.some(
         (msg) =>
-          msg.message === message &&
-          msg.sender === sender &&
+          msg.message == message &&
+          msg.sender == sender &&
           new Date(msg.createdAt).getTime() === new Date().getTime()
       );
   
@@ -35,9 +34,9 @@ const findMessagesByChatId = async (chatid) => {
 };
 
 const createOrFindChat = async (chatid, members = []) => {
-  let chat = await Chat.findOne(chatid);
+  let chat = await Chat.findOne({chatid});
   if (!chat) {
-    chat = new Chat({ chatid, members });
+    chat = new Chat({chatid, members});
     await chat.save();
   }
   console.log(chat);

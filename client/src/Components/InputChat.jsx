@@ -30,13 +30,10 @@ function InputChat({ connectedUser, chatid, selectedContact }) {
     };
 
     try {
-      // Emit the message via socket
       socket.emit("send_message", messageData);
 
-      // Optionally send to the backend for persistence
       await axios.post("http://localhost:3000/api/users/newChat", messageData);
 
-      // Clear input after sending
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);

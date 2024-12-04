@@ -6,8 +6,8 @@ const socketHandler = (io) => {
 
     socket.on("join_room", async (chatid, members) => {
       try {
-        const chat = await createOrFindChat({chatid, members});
-        socket.join(chatid); // Ensure only the correct chatid is used
+        const chat = await createOrFindChat(chatid, members);
+        socket.join(chatid); 
         console.log(`User with ID: ${socket.id} joined room: ${chatid}`);
       } catch (error) {
         console.error("Error joining room:", error);
@@ -19,7 +19,6 @@ const socketHandler = (io) => {
       try {
         const { chatid, from, to, message, sender } = data;
     
-        // Avoid persisting the message again in the database if already handled
         socket.to(chatid).emit("receive_message", { chatid, from, to, message, sender });
       } catch (error) {
         console.error("Error sending message:", error);

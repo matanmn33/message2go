@@ -39,7 +39,6 @@ function NewChat({ connectedUser, allchats }) {
     const chatid = uid();
   
     try {
-      // Check if a chat already exists with both users
       const existingChat = allchats.find((c) =>
         c.members.includes(connectedUser.username) &&
         c.members.includes(selectedContact)
@@ -47,10 +46,9 @@ function NewChat({ connectedUser, allchats }) {
   
       if (existingChat) {
         console.error("Chat with this contact already exists!");
-        return; // Prevent creating a duplicate chat
+        return; 
       }
   
-      // Proceed with creating a new chat if it doesn't exist
       const chatResponse = await axios.post(
         "http://localhost:3000/api/users/addChat",
         {
