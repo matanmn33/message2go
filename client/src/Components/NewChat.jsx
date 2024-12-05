@@ -56,6 +56,8 @@ function NewChat({ connectedUser, allchats }) {
           members: [connectedUser.username, selectedContact],
         }
       );
+
+      socket.emit("join_room", { chatid, members: [connectedUser.username, selectedContact] });
   
       const messageResponse = await axios.post(
         "http://localhost:3000/api/users/newChat",
@@ -67,11 +69,7 @@ function NewChat({ connectedUser, allchats }) {
           sender: connectedUser.username,
         }
       );
-  
-      socket.emit("join_room", {
-        chatid,
-        members: [connectedUser.username, selectedContact],
-      });
+
   
       socket.emit("send_message", {
         chatid: chatid,

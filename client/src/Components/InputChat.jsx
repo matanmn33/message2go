@@ -7,8 +7,6 @@ const socket = io("http://localhost:3000");
 
 function InputChat({ connectedUser, chatid, selectedContact }) {
 
-  socket.emit("join_room", chatid); // Join the room with the chatid
-
   const [message, setMessage] = useState("");
 
   const handleMessageChange = (e) => {
@@ -30,9 +28,10 @@ function InputChat({ connectedUser, chatid, selectedContact }) {
     };
 
     try {
-      socket.emit("send_message", messageData);
 
       await axios.post("http://localhost:3000/api/users/newChat", messageData);
+
+      socket.emit("send_message", messageData)
 
       setMessage("");
     } catch (error) {

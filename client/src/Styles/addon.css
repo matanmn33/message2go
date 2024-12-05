@@ -31,3 +31,11 @@
 .chat-list:hover {
   background: #0000006b;
 }
+.chat-current-msgs {
+  height: auto;
+  overflow-y: scroll;
+}
+.registered-chats {
+  height: auto;
+  overflow-y: scroll;
+}

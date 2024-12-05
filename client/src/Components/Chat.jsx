@@ -13,7 +13,6 @@ function Chat() {
   const [systemUsers, setSystemUsers] = useState([]);
   const [connectedUser, setConnectedUser] = useState({});
   const [selectedContact, setSelectedContact] = useState(null);
-  const [chatAlreadyOpen, setChatAlreadyOpen] = useState(false);
   const [currentChatId, setCurrentChatId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [chats, setChats] = useState([]);
@@ -36,6 +35,13 @@ function Chat() {
       }
     }
   };
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      console.log("New message received:", data);
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+  }, []);
 
   const getUsers = async () => {
     try {
@@ -60,15 +66,18 @@ function Chat() {
       );
 
       if (filteredChats.length === 0) {
-        setChats([]); 
+        setChats([]);
         return;
       }
 
       setChats(filteredChats);
+
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
   };
+
+  const [titleMessage, setTitle] = useState(null);
 
   const showCurrentChat = async (chatid) => {
     try {
@@ -77,15 +86,23 @@ function Chat() {
       );
       const current_message_data = current_message.data;
 
+      if (current_message_data.to != connectedUser.username) {
+        setTitle(current_message_data.to);
+      }
+      if (current_message_data.to == connectedUser.username) {
+        setTitle(current_message_data.from);
+      }
+
       const filteredMessages = current_message_data.messages.filter(
         (msg) =>
           msg.sender === connectedUser.userId || msg.to === connectedUser.userId
       );
+
       setMessages(filteredMessages);
 
       const contact = current_message_data.to;
       setSelectedContact({ username: contact });
-      setCurrentChatId(chatid); 
+      setCurrentChatId(chatid);
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
@@ -98,11 +115,12 @@ function Chat() {
     getChats();
   }, []);
 
+
   useEffect(() => {
     if (connectedUser?.username) {
       getChats();
     }
-  }, [connectedUser]); 
+  }, [connectedUser]);
 
   const checkToken = () => {
     if (!cookies.token) {
@@ -110,21 +128,18 @@ function Chat() {
     }
   };
 
+  useEffect(() => {
+    socket.emit("join_room", currentChatId);
 
+    socket.on("receive_message", (data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
 
-useEffect(() => {
-  socket.on("receive_message", (data) => {
-    console.log("New message received:", data);
-    setMessages((prevMessages) => [...prevMessages, data]); 
-  });
-
-  return () => {
-    socket.off("receive_message");
-  };
-  
-}, []);
-
-
+    return () => {
+      socket.off("receive_message");
+      socket.emit("leave_room", currentChatId);
+    };
+  }, [currentChatId]);
 
   return (
     <>
@@ -134,7 +149,7 @@ useEffect(() => {
         <div className="chat-main">
           <div className="chat-container mt-4 d-flex flex-row justify-content-center">
             <div className="user-chats col-2 bg-primary bg-opacity-75 p-0 mx-0 border-1 rounded-5 d-flex flex-column">
-              <NewChat connectedUser={connectedUser} allchats={chats}/>
+              <NewChat connectedUser={connectedUser} allchats={chats} />
               <div className="registered-chats mt-3 d-flex flex-column mx-0 px-0">
                 {chats.length > 0 ? (
                   chats.map((chat, i) => (
@@ -156,11 +171,19 @@ useEffect(() => {
 
             <div className="user-current-chat col-9 bg-primary bg-opacity-75 p-3 ms-2 border-1 rounded-5 d-flex flex-column justify-content-between">
               <div className="chat-current-msgs">
+
+                {titleMessage && (
+                  <h5 className="text-center">Chat with: {titleMessage}</h5>
+                )}
+
                 {messages.length > 0 ? (
                   messages.map((msg, i) => (
-                    <div key={i + "_" + msg._id}>
+                    <div
+                      key={i + "_" + msg._id}
+                      className={`alert m-2 p-2 rounded-5 ${msg.sender != connectedUser.username ? 'alert-warning' : `alert-success`}`}
+                      >
                       <strong>
-                        {msg.sender === connectedUser.userId
+                        {msg.sender == connectedUser.username
                           ? "You"
                           : msg.sender}
                         :

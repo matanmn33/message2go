@@ -4,9 +4,9 @@ const socketHandler = (io) => {
   io.on("connection", (socket) => {
     console.log(`User Connected: ${socket.id}`);
 
-    socket.on("join_room", async (chatid, members) => {
+    socket.on("join_room", async (chatid) => {
       try {
-        const chat = await createOrFindChat(chatid, members);
+        const chat = await createOrFindChat(chatid);
         socket.join(chatid); 
         console.log(`User with ID: ${socket.id} joined room: ${chatid}`);
       } catch (error) {
@@ -25,11 +25,13 @@ const socketHandler = (io) => {
       }
     });
 
-    
 
-    socket.on("disconnect", () => {
-      console.log("User Disconnected", socket.id);
+    socket.on("leave_room", (chatid) => {
+      socket.leave(chatid);
+      console.log(`User left chat room: ${chatid}`);
     });
+    
+      
   });
 };
 

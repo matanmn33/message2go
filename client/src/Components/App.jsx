@@ -6,7 +6,7 @@ import "./../Styles/addon.css";
 import "./../Styles/bg.css";
 
 function App() {
-
+  
   return (
     <BrowserRouter> 
       <AppRoutes />
