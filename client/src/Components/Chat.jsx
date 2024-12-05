@@ -148,14 +148,14 @@ function Chat() {
       <Container fluid>
         <div className="chat-main">
           <div className="chat-container mt-4 d-flex flex-row justify-content-center">
-            <div className="user-chats col-2 bg-primary bg-opacity-75 p-0 mx-0 border-1 rounded-5 d-flex flex-column">
+            <div className="user-chats col-3 col-lg-2 bg-primary bg-opacity-75 p-0 mx-0 border-1 rounded-0 d-flex flex-column">
               <NewChat connectedUser={connectedUser} allchats={chats} />
               <div className="registered-chats mt-3 d-flex flex-column mx-0 px-0">
                 {chats.length > 0 ? (
                   chats.map((chat, i) => (
                     <a
                       onClick={() => showCurrentChat(chat.chatid)}
-                      className="chat-list text-light text-start py-2 px-4 border-bottom border-1 text-decoration-none"
+                      className="chat-list text-light text-start py-2 mx-lg-0 px-2 px-lg-4 border-bottom border-1 text-decoration-none"
                       key={i + "_" + chat.chatid}
                     >
                       {chat.members.filter(
@@ -169,7 +169,7 @@ function Chat() {
               </div>
             </div>
 
-            <div className="user-current-chat col-9 bg-primary bg-opacity-75 p-3 ms-2 border-1 rounded-5 d-flex flex-column justify-content-between">
+            <div className="user-current-chat col-9 bg-primary bg-opacity-75 p-3 ms-2 border-1 rounded-0 d-flex flex-column justify-content-between">
               <div className="chat-current-msgs">
 
                 {titleMessage && (
@@ -180,7 +180,7 @@ function Chat() {
                   messages.map((msg, i) => (
                     <div
                       key={i + "_" + msg._id}
-                      className={`alert m-2 p-2 rounded-5 ${msg.sender != connectedUser.username ? 'alert-warning' : `alert-success`}`}
+                      className={`alert m-2 p-2 rounded-3 ${msg.sender != connectedUser.username ? 'alert-warning' : `alert-success`}`}
                       >
                       <strong>
                         {msg.sender == connectedUser.username
@@ -189,6 +189,10 @@ function Chat() {
                         :
                       </strong>{" "}
                       {msg.message}
+                      <br />
+                      <small className="fw-semibold opacity-50">
+                        Sent at: {msg.createdAt}
+                      </small>
                     </div>
                   ))
                 ) : (

@@ -97,10 +97,18 @@ function NewChat({ connectedUser, allchats }) {
     <>
       <Button
         variant="secondary"
-        className="rounded-5 new-chat ps-2 mt-3 mx-auto"
+        className="rounded-5 new-chat ps-2 mt-3 mx-auto d-none d-lg-block"
         onClick={handleShow}
       >
         <i className="bi bi-chat-dots me-2"></i> Create a new Chat
+      </Button>
+
+      <Button
+        variant="secondary"
+        className="rounded-5 new-chat ps-2 mt-3 mx-auto d-block d-lg-none btn-sm"
+        onClick={handleShow}
+      >
+        <i className="bi bi-chat-dots"></i>
       </Button>
 
       <Modal centered show={show} onHide={handleClose}>
