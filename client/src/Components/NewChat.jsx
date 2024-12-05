@@ -81,6 +81,7 @@ function NewChat({ connectedUser, allchats }) {
   
       setShow(false);
       setSelectedContact("");
+      window.location.reload(false);
     } catch (err) {
       console.error(
         "Error creating chat or message:",
