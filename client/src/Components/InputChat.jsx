@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:3000");
 
 function InputChat({ connectedUser, chatid, selectedContact }) {
+
+  const [cookies] = useCookies(["token"]);
+
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
 
   const [message, setMessage] = useState("");
 
@@ -29,7 +37,7 @@ function InputChat({ connectedUser, chatid, selectedContact }) {
 
     try {
 
-      await axios.post("http://localhost:3000/api/users/newChat", messageData);
+      await axios.post("http://localhost:3000/api/users/newChat", messageData, verify);
 
       socket.emit("send_message", messageData)
 

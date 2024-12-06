@@ -7,8 +7,14 @@ import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import HeaderButtonsChat from "./HeaderButtonsChat";
 
 function Menu() {
+
   const [cookies] = useCookies(["token"]);
 
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
+  
   const [connectedUser, setConnectedUser] = useState({});
 
   const userDecoded = async () => {
@@ -17,7 +23,7 @@ function Menu() {
         const decodedToken = jwtDecode(cookies.token);
         const decodedTokenId = decodedToken.userId;
         const response = await axios.get(
-          `http://localhost:3000/api/users/getUser/${decodedTokenId}`
+          `http://localhost:3000/api/users/getUser/${decodedTokenId}`, verify
         );
         const userObj = response.data;
         setConnectedUser(userObj);

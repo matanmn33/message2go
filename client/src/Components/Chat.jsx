@@ -20,13 +20,18 @@ function Chat() {
   const navigate = useNavigate();
   const socket = io("http://localhost:3000");
 
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
+
   const userDecoded = async () => {
     if (cookies.token) {
       try {
         const decodedToken = jwtDecode(cookies.token);
         const decodedTokenId = decodedToken.userId;
         const response = await axios.get(
-          `http://localhost:3000/api/users/getUser/${decodedTokenId}`
+          `http://localhost:3000/api/users/getUser/${decodedTokenId}`, verify
         );
         const userObj = response.data;
         setConnectedUser(userObj);
@@ -45,7 +50,7 @@ function Chat() {
 
   const getUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users/all");
+      const response = await axios.get("http://localhost:3000/api/users/all", verify);
       const dataUsers = response.data;
       const usernames = dataUsers.map((user) => user.username);
       setSystemUsers(usernames);
@@ -57,7 +62,7 @@ function Chat() {
   const getChats = async () => {
     try {
       const axios_chats = await axios.get(
-        "http://localhost:3000/api/users/getChats"
+        "http://localhost:3000/api/users/getChats", verify
       );
       const dataChats = axios_chats.data;
 
@@ -82,7 +87,7 @@ function Chat() {
   const showCurrentChat = async (chatid) => {
     try {
       const current_message = await axios.get(
-        `http://localhost:3000/api/users/getMessage/${chatid}`
+        `http://localhost:3000/api/users/getMessage/${chatid}`, verify
       );
       const current_message_data = current_message.data;
 
@@ -191,7 +196,7 @@ function Chat() {
                       {msg.message}
                       <br />
                       <small className="fw-semibold opacity-50">
-                        Sent at: {msg.createdAt}
+                        {msg.createdAt&&msg.createdAt ? `Sent at: ${msg.createdAt}` : null}
                       </small>
                     </div>
                   ))

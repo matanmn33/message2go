@@ -9,6 +9,11 @@ import Menu from "./Menu";
 function SearchUsers() {
   const [cookies] = useCookies(["token"]);
 
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
+
   const [connectedUser, setConnectedUser] = useState({});
 
   let ToastContent;
@@ -19,7 +24,7 @@ function SearchUsers() {
         const decodedToken = jwtDecode(cookies.token);
         const decodedTokenId = decodedToken.userId;
         const response = await axios.get(
-          `http://localhost:3000/api/users/getUser/${decodedTokenId}`
+          `http://localhost:3000/api/users/getUser/${decodedTokenId}`, verify
         );
         const userObj = response.data;
         setConnectedUser(userObj);
@@ -45,7 +50,7 @@ function SearchUsers() {
 
   const getAllUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/users/all");
+      const res = await axios.get("http://localhost:3000/api/users/all", verify);
       const allUsers = res.data;
       setGetUsers(allUsers);
     } catch (error) {
@@ -72,8 +77,8 @@ function SearchUsers() {
     }));
 
     await axios.post(
-      `http://localhost:3000/api/users/addContact/${connectedUser._id}`,
-      { contacts: newContacts } 
+      `http://localhost:3000/api/users/addContact/${connectedUser._id}`, 
+      { contacts: newContacts }, verify
     );
     ToastContent = "User added to the Contacts list.";
     alert(ToastContent)

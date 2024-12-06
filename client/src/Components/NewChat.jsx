@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 import { uid } from "uid";
 import io from "socket.io-client";
 const socket = io("http://localhost:3000");
 
 function NewChat({ connectedUser, allchats }) {
+
+  const [cookies] = useCookies(["token"]);
+
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
+
   const [show, setShow] = useState(false);
 
   const [selectedContact, setSelectedContact] = useState("");
@@ -54,20 +63,20 @@ function NewChat({ connectedUser, allchats }) {
         {
           chatid: chatid,
           members: [connectedUser.username, selectedContact],
-        }
+        }, verify
       );
 
       socket.emit("join_room", { chatid, members: [connectedUser.username, selectedContact] });
   
       const messageResponse = await axios.post(
-        "http://localhost:3000/api/users/newChat",
+        "http://localhost:3000/api/users/newChat", 
         {
           chatid: chatid,
           from: connectedUser.username,
           to: selectedContact,
           message: newMessage.message,
           sender: connectedUser.username,
-        }
+        }, verify
       );
 
   

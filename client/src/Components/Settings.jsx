@@ -7,7 +7,13 @@ import axios from "axios";
 import Menu from "./Menu";
 
 function SettingsPage() {
+
   const [cookies] = useCookies(["token"]);
+
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
 
   const [connectedUser, setConnectedUser] = useState({});
   const [alert, setAlert] = useState(false);
@@ -18,7 +24,7 @@ function SettingsPage() {
         const decodedToken = jwtDecode(cookies.token);
         const decodedTokenId = decodedToken.userId;
         const response = await axios.get(
-          `http://localhost:3000/api/users/getUser/${decodedTokenId}`
+          `http://localhost:3000/api/users/getUser/${decodedTokenId}`, verify
         );
         const userObj = response.data;
         setConnectedUser(userObj);
@@ -50,7 +56,7 @@ function SettingsPage() {
     try {
       await axios.post(
         `http://localhost:3000/api/users/updateUser/${connectedUser._id}`,
-        userInfo
+        userInfo, verify
       );
       setConnectedUser({ ...connectedUser, ...userInfo });
       setAlert(true);

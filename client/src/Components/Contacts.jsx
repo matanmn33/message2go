@@ -12,13 +12,18 @@ function Contacts() {
 
   const [connectedUser, setConnectedUser] = useState({});
 
+  const verify = {
+    headers: { Authorization: `Bearer ${cookies}` },
+    withCredentials: true
+  }
+
   const userDecoded = async () => {
     if (cookies.token) {
       try {
         const decodedToken = jwtDecode(cookies.token);
         const decodedTokenId = decodedToken.userId;
         const response = await axios.get(
-          `http://localhost:3000/api/users/getUser/${decodedTokenId}`
+          `http://localhost:3000/api/users/getUser/${decodedTokenId}`, verify
         );
         const userObj = response.data;
         setConnectedUser(userObj);
@@ -74,8 +79,8 @@ function Contacts() {
     try {
       const updatedContacts = tempArray.filter((item) => item!== contact);
       await axios.post(
-        `http://localhost:3000/api/users/addContact/${connectedUser._id}`,
-        { contacts: updatedContacts }
+        `http://localhost:3000/api/users/addContact/${connectedUser._id}`, 
+        { contacts: updatedContacts }, verify
       );
       setConnectedUser({...connectedUser, contacts: updatedContacts });
     } catch (error) {

@@ -3,21 +3,21 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
-router.get('/all', userController.getAllUsers);  
+router.get('/all', authController.verifyToken, userController.getAllUsers); // Test Auth Server Side
 
-router.get('/getUser/:id', userController.FindUserByID);  
+router.get('/getUser/:id', authController.verifyToken, userController.FindUserByID);  
 
-router.post('/updateUser/:id', userController.UpdateUserByID);  
+router.post('/updateUser/:id', authController.verifyToken, userController.UpdateUserByID);  
 
-router.post('/addContact/:id', userController.AddContact);  
+router.post('/addContact/:id', authController.verifyToken, userController.AddContact);  
 
-router.post('/newChat', userController.NewChat);  
+router.post('/newChat', authController.verifyToken, userController.NewChat);  
 
-router.post('/addChat', userController.AddChat);  
+router.post('/addChat', authController.verifyToken, userController.AddChat);  
 
-router.get('/getChats', userController.FindAllChats);
+router.get('/getChats', authController.verifyToken, userController.FindAllChats);
 
-router.get('/getMessage/:chatid', userController.FindMessageByID);
+router.get('/getMessage/:chatid', authController.verifyToken, userController.FindMessageByID);
 
 router.post('/register', userController.registerUser);
 

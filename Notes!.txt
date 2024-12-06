@@ -1,0 +1,17 @@
+This is an important Notes files that holds some keys about Message2Go webapp.
+
+Message2Go is a mini-project for educational purposes.
+
+It contains Full-Stack files which means Server side files and Client side files too.
+The Server side mostly based on: NodeJS, Express, MongoDB (mongoose), Socket-IO, JWT and few more libraries.
+The Client side mostly based on: React, React DOM Router, React-Bootstrap, AXIOS, Socket-IO-Client and few more libraries.
+
+Keynotes:
+- The app is using JWT Token to authenticate the credentials of the current user.
+- The app does not has media based files upload service which could be added using multer and users's property like "avatar" or something else similar.
+- Using Socket-IO is to make the chat a real-time one, each call-to-action saves the data that sent via the socket-io emits into the mongo database.
+- This project does not make use of any state management system like redux or even context, i chose sometimes to duplicate few code sections instead because i found out it will be easier while this is not a big project.
+- Features: Search Users and Watch over the whole users in the system, Add users as Contacts, Login/Register/Logout based JWT tokens, Settings page which will allow the user to change their names and of course the main Message2Go page which contains the Chat itself.
+- The code might not be the cleanest or the most optimized this it is due to very busy schedules each day, even so everything work and actually pretty well.
+
+Message2Go built by Matan-Hay Miro for TESI final project.
